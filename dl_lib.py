@@ -1,5 +1,4 @@
-import contextlib
-import pdb
+# -*- codeing: utf-8 -*-
 from ryu.lib.hub import StreamServer
 from ryu.lib import hub
 import json
@@ -13,14 +12,6 @@ class EventAppListRequst(event.EventRequestBase):
         self.dst = 'DynamicLoader'
 
 class EventAppListReply(event.EventReplyBase):
-    '''
-    reply application application list
-    ex:
-    [
-        {app name(string): (app class, installed(boolean))},
-        ...
-    ]
-    '''
     def __init__(self, dst, app_list):
         super(EventAppListReply, self).__init__(dst)
         self.app_list = app_list
@@ -37,7 +28,7 @@ class EventAppUninstall(event.EventBase):
         super(EventAppUninstall, self).__init__()
         self.app_id = app_id
 
-
+LOG = logging.getLogger('DynamicLoaderLib')
 class DynamicLoaderLib(app_manager.RyuApp):
 
     def __init__(self, *args, **kwargs):
@@ -72,8 +63,9 @@ class DynamicLoaderLib(app_manager.RyuApp):
                         self.send_event_to_observers(ev)
 
 
-                except Exception:
-                    pass
+                except ValueError:
+                    LOG.debug('Incorrect json format %s', buf)
+
                 hub.sleep(0.1)
         finally:
             socket.close()
