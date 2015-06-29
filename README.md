@@ -26,9 +26,12 @@ And start cli.py, and you can use it!
 
 What command I can use?
 --------------
-For now, this plugin only provide "list" and install command, and I will add "uninstall" later
+For now, this plugin provide :
+ 1. list: list all avalable ryu app from ryu.app module
+ 2. install: install a ryu application by id
+ 3. uninstall: uninstall a ryu application
 
 TODO List
 --------------
-1. Add "uninstall command"
-2. Change from python 2.7 to python 3.4
+1. Change from python 2.7 to python 3.4
+2. Use python cmd module to implement it!
