@@ -1,4 +1,4 @@
-import pdb
+# -*- codeing: utf-8 -*-
 import logging
 import pkgutil
 import inspect
@@ -78,28 +78,26 @@ class DynamicLoader(app_manager.RyuApp):
     def install_handler(self, ev):
         try:
             app_id = ev.app_id
-            print('Installing app-id %d' % (app_id, ))
             app_cls = self.available_app[app_id][1]
             _installed_apps = self.ryu_mgr.applications
 
             if app_cls in \
                 [obj.__class__ for obj in _installed_apps.values()]:
                 # app was installed
-                print('Application already installed')
+                LOG.debug('Application already installed')
 
-            app = self.ryu_mgr.instantiate(app_cls)
-            app.start()
-
-            print('install finished.')
+            else:
+                app = self.ryu_mgr.instantiate(app_cls)
+                app.start()
 
         except IndexError:
-            print('Can\'t find application with id %d' % app_id)
+            LOG.debug('Can\'t find application with id %d', app_id)
 
         except ValueError:
-            print('ryu-app-id must be number')
+            LOG.debug('ryu-app-id must be number')
 
         except Exception, ex:
-            print 'Import error'
+            LOG.debug('Import error for id: %d', ev.app_id)
             raise ex
 
 
@@ -107,9 +105,8 @@ class DynamicLoader(app_manager.RyuApp):
     def uninstall_handler(self, ev):
         app_id = ev.app_id
         app_info = self.available_app[app_id]
-        # such dirty, fix it!
+        # TODO: such dirty, fix it!
         app_name = app_info[0].split('.')[-1]
         self.ryu_mgr.uninstantiate(app_name)
-        print('uninstalled')
 
 
