@@ -31,6 +31,13 @@ class EventAppInstall(event.EventBase):
         super(EventAppInstall, self).__init__()
         self.app_id = app_id
 
+class EventAppUninstall(event.EventBase):
+
+    def __init__(self, app_id):
+        super(EventAppUninstall, self).__init__()
+        self.app_id = app_id
+
+
 class DynamicLoaderLib(app_manager.RyuApp):
 
     def __init__(self, *args, **kwargs):
@@ -58,6 +65,10 @@ class DynamicLoaderLib(app_manager.RyuApp):
 
                     if msg['cmd'] == 'install':
                         ev = EventAppInstall(msg['app_id'])
+                        self.send_event_to_observers(ev)
+
+                    if msg['cmd'] == 'uninstall':
+                        ev = EventAppUninstall(msg['app_id'])
                         self.send_event_to_observers(ev)
 
 

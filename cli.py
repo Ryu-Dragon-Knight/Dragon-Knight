@@ -36,6 +36,17 @@ def main():
 
                 app_id += 1
 
+        elif 'uninstall' in line:
+            argv = line.split(' ')
+
+            if len(argv) < 2:
+                print 'install [app_id]'
+                continue
+
+            app_id = int(argv[1])
+            msg = json.dumps({'cmd':'uninstall', 'app_id': app_id})
+            sc.sendall(msg)
+
         elif 'install' in line:
             argv = line.split(' ')
 

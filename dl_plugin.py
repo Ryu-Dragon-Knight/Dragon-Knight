@@ -1,3 +1,4 @@
+import pdb
 import logging
 import pkgutil
 import inspect
@@ -75,9 +76,6 @@ class DynamicLoader(app_manager.RyuApp):
 
     @set_ev_cls(dl_lib.EventAppInstall, MAIN_DISPATCHER)
     def install_handler(self, ev):
-        '''Install ryu application'''
-      
-
         try:
             app_id = ev.app_id
             print('Installing app-id %d' % (app_id, ))
@@ -105,8 +103,13 @@ class DynamicLoader(app_manager.RyuApp):
             raise ex
 
 
-
-
-
+    @set_ev_cls(dl_lib.EventAppUninstall, MAIN_DISPATCHER)
+    def uninstall_handler(self, ev):
+        app_id = ev.app_id
+        app_info = self.available_app[app_id]
+        # such dirty, fix it!
+        app_name = app_info[0].split('.')[-1]
+        self.ryu_mgr.uninstantiate(app_name)
+        print('uninstalled')
 
 
