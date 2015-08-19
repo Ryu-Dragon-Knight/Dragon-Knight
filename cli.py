@@ -28,7 +28,10 @@ def http_get(url):
     result = None
 
     if six.PY2:
-        response = urllib.urlopen(url)
+        try:
+            response = urllib.urlopen(url)
+        except urllib.URLError as e:
+            return e.reason
         result = json.load(response)
 
     else:
@@ -50,7 +53,10 @@ def http_post(url, req_body):
     result = None
 
     if six.PY2:
-        response = urllib.urlopen(url, data=req_body)
+        try:
+            response = urllib.urlopen(url, data=req_body)
+        except urllib.URLError as e:
+            return e.reason
         result = json.load(response)
 
     else:
@@ -92,12 +98,13 @@ class DlCli(cmd.Cmd):
         '''
         try:
             app_id = int(line)
-            req_body = json.dumps({'app_id':app_id})
-            result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
-            print(result)
-
         except ValueError:
             print('Application id must be integer')
+            return
+            
+        req_body = json.dumps({'app_id':app_id})
+        result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
+        print(result)
 
     def do_uninstall(self, line):
         '''
@@ -107,12 +114,13 @@ class DlCli(cmd.Cmd):
         '''
         try:
             app_id = int(line)
-            req_body = json.dumps({'app_id':app_id})
-            result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
-            print(result)
-
         except ValueError:
             print('Application id must be integer')
+            return
+
+        req_body = json.dumps({'app_id':app_id})
+        result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
+        print(result)
 
     def do_exit(self, line):
         '''
