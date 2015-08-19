@@ -1,71 +1,68 @@
 # -*- codeing: utf-8 -*-
-from ryu.lib.hub import StreamServer
-from ryu.lib import hub
+import logging
 import json
+import contextlib
+import dl_event
+from ryu.lib import hub
 from ryu.base import app_manager
-from ryu.controller import event
 
-class EventAppListRequst(event.EventRequestBase):
-
-    def __init__(self):
-        super(EventAppListRequst, self).__init__()
-        self.dst = 'DynamicLoader'
-
-class EventAppListReply(event.EventReplyBase):
-    def __init__(self, dst, app_list):
-        super(EventAppListReply, self).__init__(dst)
-        self.app_list = app_list
-
-class EventAppInstall(event.EventBase):
-
-    def __init__(self, app_id):
-        super(EventAppInstall, self).__init__()
-        self.app_id = app_id
-
-class EventAppUninstall(event.EventBase):
-
-    def __init__(self, app_id):
-        super(EventAppUninstall, self).__init__()
-        self.app_id = app_id
 
 LOG = logging.getLogger('DynamicLoaderLib')
 class DynamicLoaderLib(app_manager.RyuApp):
 
+    _EVENTS = [dl_event.EventAppListRequst,
+               dl_event.EventAppListReply,
+               dl_event.EventAppInstall,
+               dl_event.EventAppUninstall,
+               ]
+
     def __init__(self, *args, **kwargs):
         super(DynamicLoaderLib, self).__init__(*args, **kwargs)
-        self.name = 'dl_lib'
-        self.server = StreamServer(('0.0.0.0', 10807), self._connection_factory)
+        self.server = hub.StreamServer(('0.0.0.0', 10807), self._connection_factory)
 
     def start(self):
         hub.spawn(self.server.serve_forever)
 
     def _connection_factory(self, socket, address):
+        with contextlib.closing(CliAgent(socket, address, self)) as agent:
+            agent.serv()
+        
+
+class CliAgent(object):
+
+    def __init__(self, socket, address, dynamic_load_app):
+        self.socket = socket
+        self.address = address
+        self.dynamic_load_app = dynamic_load_app
+    def close(self):
+        self.socket.close()
+
+    def serv(self):
+
+        while True:
+            buf = self.socket.recv(128)
+            try:
+                msg = json.loads(buf.decode('ascii'))
+
+                if msg['cmd'] == 'list':
+                    req = dl_event.EventAppListRequst()
+                    rep = self.dynamic_load_app.send_request(req)
+                    reply_msg = json.dumps(rep.app_list)
+                    self.socket.sendall(reply_msg)
+
+                if msg['cmd'] == 'install':
+                    ev = dl_event.EventAppInstall(msg['app_id'])
+                    self.dynamic_load_app.send_event_to_observers(ev)
+
+                if msg['cmd'] == 'uninstall':
+                    ev = dl_event.EventAppUninstall(msg['app_id'])
+                    self.dynamic_load_app.send_event_to_observers(ev)
 
 
-        try:
-            while True:
-                buf = socket.recv(128)
-                try:
-                    msg = json.loads(buf.decode('ascii'))
+            except ValueError:
+                LOG.debug('Incorrect json format %s', buf)
 
-                    if msg['cmd'] == 'list':
-                        req = EventAppListRequst()
-                        rep = self.send_request(req)
-                        reply_msg = json.dumps(rep.app_list)
-                        socket.sendall(reply_msg)
-
-                    if msg['cmd'] == 'install':
-                        ev = EventAppInstall(msg['app_id'])
-                        self.send_event_to_observers(ev)
-
-                    if msg['cmd'] == 'uninstall':
-                        ev = EventAppUninstall(msg['app_id'])
-                        self.send_event_to_observers(ev)
+            hub.sleep(0.1)
 
 
-                except ValueError:
-                    LOG.debug('Incorrect json format %s', buf)
 
-                hub.sleep(0.1)
-        finally:
-            socket.close()
