@@ -19,17 +19,6 @@ def deep_import(mod_name):
         mod = getattr(mod, comp)
     return mod
 
-def create_context(app_name, app_cls):
-
-    if issubclass(cls, RyuApp):
-        context = self._instantiate(None, cls)
-    else:
-        context = cls()
-
-    LOG.info('creating context %s', key)
-    assert key not in self.contexts
-    self.contexts[key] = context
-
 class DynamicLoader(app_manager.RyuApp):
 
     _CONTEXTS = {
@@ -63,6 +52,17 @@ class DynamicLoader(app_manager.RyuApp):
             except ImportError:
                 LOG.debug('Import Error')
 
+    def create_context(key, cls):
+        context = None
+
+        if issubclass(cls, RyuApp):
+            context = self._instantiate(None, cls)
+        else:
+            context = cls()
+
+        LOG.info('creating context %s', key)
+        self.ryu_mgr.contexts.setdefault(key, context)
+
 
     @set_ev_cls(dl_event.EventAppListRequst, MAIN_DISPATCHER)
     def list_handler(self, req):
@@ -71,9 +71,9 @@ class DynamicLoader(app_manager.RyuApp):
 
         for app_info in self.available_app:
             _cls = app_info[1]
+            _installed_apps_cls = [obj.__class__ for obj in _installed_apps.values()]
 
-            if _cls in \
-                [obj.__class__ for obj in _installed_apps.values()]:
+            if _cls in _installed_apps_cls:
                 res.append({'name': app_info[0], 'installed': True})
 
             else:
