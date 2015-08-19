@@ -4,6 +4,7 @@ import pkgutil
 import inspect
 
 from ryu import app as ryu_app
+from ryu.lib import hub
 from ryu.app.wsgi import WSGIApplication
 from ryu.base import app_manager
 from ryu.controller.handler import MAIN_DISPATCHER
@@ -24,21 +25,22 @@ def deep_import(mod_name):
 
 class DynamicLoader(RyuApp):
 
-    _CONTEXTS = {
-        'wsgi': WSGIApplication
-    }
-
     def __init__(self, *args, **kwargs):
         super(DynamicLoader, self).__init__(*args, **kwargs)
         self.ryu_mgr = AppManager.get_instance()
         self.available_app = []
         self.init_apps()
-
-        wsgi = kwargs['wsgi']
+        wsgi = self.create_wsgi_app('0.0.0.0', 5566)
         mapper = wsgi.mapper
         wsgi.registory['DLController'] = self
 
         self.init_mapper(mapper)
+
+    def create_wsgi_app(self, host, port):
+        wsgi = WSGIApplication()
+        webapp = hub.WSGIServer((host, port), wsgi)
+        hub.spawn(webapp.serve_forever)
+        return wsgi
 
 
     def init_apps(self):
