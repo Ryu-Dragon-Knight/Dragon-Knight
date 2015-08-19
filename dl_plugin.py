@@ -100,14 +100,14 @@ class DynamicLoader(RyuApp):
 
     def list_all_apps(self):
         res = []
-        _installed_apps = self.ryu_mgr.applications
+        installed_apps = self.ryu_mgr.applications
 
         for app_info in self.available_app:
             _cls = app_info[1]
-            _installed_apps_cls =\
-                [obj.__class__ for obj in _installed_apps.values()]
+            installed_apps_cls =\
+                [obj.__class__ for obj in installed_apps.values()]
 
-            if _cls in _installed_apps_cls:
+            if _cls in installed_apps_cls:
                 res.append({'name': app_info[0], 'installed': True})
 
             else:
@@ -120,11 +120,11 @@ class DynamicLoader(RyuApp):
         try:
             app_cls = self.available_app[app_id][1]
             app_contexts = app_cls._CONTEXTS
-            _installed_apps = self.ryu_mgr.applications
-            _installed_apps_cls =\
-                [obj.__class__ for obj in _installed_apps.values()]
+            installed_apps = self.ryu_mgr.applications
+            installed_apps_cls =\
+                [obj.__class__ for obj in installed_apps.values()]
 
-            if app_cls in _installed_apps_cls:
+            if app_cls in installed_apps_cls:
                 # app was installed
                 LOG.debug('Application already installed')
                 return
@@ -153,7 +153,7 @@ class DynamicLoader(RyuApp):
             LOG.debug('ryu-app-id must be number')
 
         except Exception, ex:
-            LOG.debug('Import error for id: %d', ev.app_id)
+            LOG.debug('Import error for id: %d', ex.app_id)
             raise ex
 
 
@@ -161,8 +161,42 @@ class DynamicLoader(RyuApp):
         app_info = self.available_app[app_id]
         # TODO: such dirty, fix it!
         app_name = app_info[0].split('.')[-1]
+        if app_name not in self.ryu_mgr.applications:
+            raise ValueError('Can\'t find application')
 
-        if app_name in self.ryu_mgr.applications:
-            app = self.ryu_mgr.applications[app_name]
-            self.ryu_mgr.uninstantiate(app_name)
-            app.stop()
+        app = self.ryu_mgr.applications[app_name]
+        self.ryu_mgr.uninstantiate(app_name)
+        app.stop()
+
+        # after we stoped application, chack it context
+        app_cls = app_info[1]
+        app_contexts = app_cls._CONTEXTS
+        installed_apps = self.ryu_mgr.applications
+        installed_apps_cls =\
+            [obj.__class__ for obj in installed_apps.values()]
+
+        for ctx_name in app_contexts:
+            for app_cls in installed_apps_cls:
+                if ctx_name in app_cls._CONTEXTS:
+                    break;
+
+            else:
+                # remove this context
+                ctx_cls = app_contexts[ctx_name]
+                ctx = self.ryu_mgr.contexts[ctx_name]
+                if issubclass(ctx_cls, RyuApp):
+                    ctx.stop()
+
+                if ctx.name in self.ryu_mgr.applications:
+                    del self.ryu_mgr.applications[ctx.name]
+
+                if ctx_name in self.ryu_mgr.contexts:
+                    del self.ryu_mgr.contexts[ctx_name]
+
+                if ctx.name in app_manager.SERVICE_BRICKS:
+                    del app_manager.SERVICE_BRICKS[ctx.name]
+
+                ctx.logger.info('Uninstall app %s successfully', ctx.name)
+
+                # handler hacking, remove all stream handler to avoid it log many times!
+                ctx.logger.handlers = []
