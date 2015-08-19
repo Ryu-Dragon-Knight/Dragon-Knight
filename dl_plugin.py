@@ -146,6 +146,8 @@ class DynamicLoader(RyuApp):
 
         except IndexError:
             LOG.debug('Can\'t find application with id %d', app_id)
+            ex = IndexError('Can\'t find application with id %d' % (app_id, ))
+            raise ex
 
         except ValueError:
             LOG.debug('ryu-app-id must be number')

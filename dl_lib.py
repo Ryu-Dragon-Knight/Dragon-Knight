@@ -14,15 +14,15 @@ def rest_command(func):
                             body=json.dumps(msg))
 
         except SyntaxError as e:
-            status = 400
             details = e.msg
         except (ValueError, NameError) as e:
-            status = 400
             details = e.message
+        except IndexError as e:
+            details = e.args[0]
 
         msg = {'result': 'failure',
                'details': details}
-        return Response(status=status, body=json.dumps(msg))
+        return Response(body=json.dumps(msg))
 
     return _rest_command
 
@@ -42,6 +42,11 @@ class DLController(ControllerBase):
     def install_app(self, req, **_kwargs):
         body = json.loads(req.body)
         app_id = int(body['app_id'])
+
+        if app_id < 0:
+            e = ValueError('app id must grater than 0')
+            raise e
+
         self.ryu_app.install_app(app_id)
         return {'result': 'ok'}
 
@@ -49,5 +54,10 @@ class DLController(ControllerBase):
     def uninstall_app(self, req, **_kwargs):
         body = json.loads(req.body)
         app_id = int(body['app_id'])
+
+        if app_id < 0:
+            e = ValueError('app id must grater than 0')
+            raise e
+
         self.ryu_app.uninstall_app(app_id)
         return {'result': 'ok'}
