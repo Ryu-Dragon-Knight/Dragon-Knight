@@ -52,16 +52,21 @@ class DynamicLoader(app_manager.RyuApp):
             except ImportError:
                 LOG.debug('Import Error')
 
-    def create_context(key, cls):
+    def create_context(self, key, cls):
         context = None
 
         if issubclass(cls, RyuApp):
-            context = self._instantiate(None, cls)
+            context = self.ryu_mgr._instantiate(None, cls)
         else:
             context = cls()
 
         LOG.info('creating context %s', key)
+
+        if key in self.ryu_mgr.contexts:
+            return None
+
         self.ryu_mgr.contexts.setdefault(key, context)
+        return context
 
 
     @set_ev_cls(dl_event.EventAppListRequst, MAIN_DISPATCHER)
@@ -88,16 +93,29 @@ class DynamicLoader(app_manager.RyuApp):
         try:
             app_id = ev.app_id
             app_cls = self.available_app[app_id][1]
+            app_contexts = app_cls._CONTEXTS
             _installed_apps = self.ryu_mgr.applications
+            _installed_apps_cls = [obj.__class__ for obj in _installed_apps.values()]
 
-            if app_cls in \
-                [obj.__class__ for obj in _installed_apps.values()]:
+            if app_cls in _installed_apps_cls:
                 # app was installed
                 LOG.debug('Application already installed')
+                return
+            new_contexts = []
 
-            else:
-                app = self.ryu_mgr.instantiate(app_cls)
-                app.start()
+            for k in app_contexts:
+                context_cls = app_contexts[k]
+                ctx = self.create_context(k, context_cls)
+
+                if ctx and issubclass(context_cls, RyuApp):
+                    new_contexts.append(ctx)
+
+            app = self.ryu_mgr.instantiate(app_cls, **self.ryu_mgr.contexts)
+            new_contexts.append(app)
+
+            for ctx in new_contexts:
+                t = ctx.start()
+                # t should be join to some where?
 
         except IndexError:
             LOG.debug('Can\'t find application with id %d', app_id)
