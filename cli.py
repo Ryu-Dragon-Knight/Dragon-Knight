@@ -98,12 +98,13 @@ class DlCli(cmd.Cmd):
         '''
         try:
             app_id = int(line)
-            req_body = json.dumps({'app_id':app_id})
-            result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
-            print(result)
-
         except ValueError:
             print('Application id must be integer')
+            return
+            
+        req_body = json.dumps({'app_id':app_id})
+        result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
+        print(result)
 
     def do_uninstall(self, line):
         '''
@@ -113,12 +114,13 @@ class DlCli(cmd.Cmd):
         '''
         try:
             app_id = int(line)
-            req_body = json.dumps({'app_id':app_id})
-            result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
-            print(result)
-
         except ValueError:
             print('Application id must be integer')
+            return
+
+        req_body = json.dumps({'app_id':app_id})
+        result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
+        print(result)
 
     def do_exit(self, line):
         '''
