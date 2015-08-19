@@ -12,6 +12,10 @@ if six.PY2:
 else:
     import urllib3 as urllib
 
+CLI_BASE_URL = 'http://127.0.0.1:8080'
+CLI_LIST_PATH = '/list'
+CLI_INSTALL_PATH = '/install'
+CLI_UNINSTALL_PATH = '/uninstall'
 
 def http_get(url):
     '''
@@ -66,7 +70,7 @@ class DlCli(cmd.Cmd):
         List all available applications.
         '''
 
-        app_list = http_get('http://127.0.0.1:8080/list')
+        app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
         app_id = 0
 
         for app_info in app_list:
@@ -89,7 +93,7 @@ class DlCli(cmd.Cmd):
         try:
             app_id = int(line)
             req_body = json.dumps({'app_id':app_id})
-            result = http_post('http://127.0.0.1:8080/install', req_body)
+            result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
             print(result)
 
         except ValueError:
@@ -104,7 +108,7 @@ class DlCli(cmd.Cmd):
         try:
             app_id = int(line)
             req_body = json.dumps({'app_id':app_id})
-            result = http_post('http://127.0.0.1:8080/uninstall', req_body)
+            result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
             print(result)
 
         except ValueError:
@@ -116,5 +120,21 @@ class DlCli(cmd.Cmd):
         '''
         return True
 
+    def do_EOF(self, line):
+        '''
+        Use ctrl + D to exit
+        '''
+        return True
+
 if __name__ == '__main__':
+    '''
+    Usage:
+        ./cli [Base url]
+
+        Base url: RESTful API server base url, default is http://127.0.0.1:8080
+    '''
+    import sys
+    if len(sys.argv) >= 2:
+        CLI_BASE_URL = sys.argv[1]
+
     DlCli().cmdloop()
