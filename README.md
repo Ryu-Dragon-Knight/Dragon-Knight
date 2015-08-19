@@ -19,7 +19,7 @@ Tested environment
 How to use it?
 --------------
 Start ryu application with dl_plugin
-> $ ryu-manager dl_plugin
+> $ ryu-manager dl_plugin ryu.controller.ofp_handler
 
 And start cli.py, and you can use it!
 
