@@ -70,6 +70,8 @@ class DlCli(cmd.Cmd):
     """
     Ryu dynamic loader command line
     """
+    intro = 'Welcome to the Ryu CLI. Type help or ? to list commands.\n'
+    prompt = '(ryu-cli) '
 
     def do_list(self, line):
         '''
@@ -101,7 +103,7 @@ class DlCli(cmd.Cmd):
         except ValueError:
             print('Application id must be integer')
             return
-            
+
         req_body = json.dumps({'app_id':app_id})
         result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
         print(result)
