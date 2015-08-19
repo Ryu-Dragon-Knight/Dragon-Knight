@@ -2,12 +2,15 @@
 import logging
 import pkgutil
 import inspect
-import dl_lib, dl_event
+
 from ryu import app as ryu_app
+from ryu.app.wsgi import WSGIApplication
 from ryu.base import app_manager
 from ryu.controller.handler import MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.base.app_manager import RyuApp, AppManager
+
+from dl_lib import DLController
 
 
 LOG = logging.getLogger('DynamicLoader')
@@ -19,16 +22,27 @@ def deep_import(mod_name):
         mod = getattr(mod, comp)
     return mod
 
-class DynamicLoader(app_manager.RyuApp):
+class DynamicLoader(RyuApp):
 
     _CONTEXTS = {
-        'dl_lib': dl_lib.DynamicLoaderLib
+        'wsgi': WSGIApplication
     }
 
     def __init__(self, *args, **kwargs):
         super(DynamicLoader, self).__init__(*args, **kwargs)
         self.ryu_mgr = AppManager.get_instance()
         self.available_app = []
+        self.init_apps()
+
+        wsgi = kwargs['wsgi']
+        mapper = wsgi.mapper
+        wsgi.registory['DLController'] = self
+
+        self.init_mapper(mapper)
+
+
+    def init_apps(self):
+        # init all available apps
         for _, name, is_pkg in pkgutil.walk_packages(ryu_app.__path__):
             LOG.debug(
                 'Find %s : %s',
@@ -54,6 +68,19 @@ class DynamicLoader(app_manager.RyuApp):
             except ImportError:
                 LOG.debug('Import Error')
 
+    def init_mapper(self, mapper):
+        mapper.connect('list', '/list', controller=DLController,
+                       action='list_all_apps',
+                       conditions=dict(method=['GET']))
+
+        mapper.connect('list', '/install', controller=DLController,
+                       action='install_app',
+                       conditions=dict(method=['POST']))
+
+        mapper.connect('list', '/uninstall', controller=DLController,
+                       action='uninstall_app',
+                       conditions=dict(method=['POST']))
+
     def create_context(self, key, cls):
         context = None
 
@@ -71,14 +98,13 @@ class DynamicLoader(app_manager.RyuApp):
         return context
 
 
-    @set_ev_cls(dl_event.EventAppListRequst, MAIN_DISPATCHER)
-    def list_handler(self, req):
+    def list_all_apps(self):
         res = []
         _installed_apps = self.ryu_mgr.applications
 
         for app_info in self.available_app:
             _cls = app_info[1]
-            _installed_apps_cls =
+            _installed_apps_cls =\
                 [obj.__class__ for obj in _installed_apps.values()]
 
             if _cls in _installed_apps_cls:
@@ -87,18 +113,15 @@ class DynamicLoader(app_manager.RyuApp):
             else:
                 res.append({'name': app_info[0], 'installed': False})
 
-        rep = dl_event.EventAppListReply(req.src, res)
-        self.reply_to_request(req, rep)
+        return res
 
 
-    @set_ev_cls(dl_event.EventAppInstall, MAIN_DISPATCHER)
-    def install_handler(self, ev):
+    def install_app(self, app_id):
         try:
-            app_id = ev.app_id
             app_cls = self.available_app[app_id][1]
             app_contexts = app_cls._CONTEXTS
             _installed_apps = self.ryu_mgr.applications
-            _installed_apps_cls =
+            _installed_apps_cls =\
                 [obj.__class__ for obj in _installed_apps.values()]
 
             if app_cls in _installed_apps_cls:
@@ -132,9 +155,7 @@ class DynamicLoader(app_manager.RyuApp):
             raise ex
 
 
-    @set_ev_cls(dl_event.EventAppUninstall, MAIN_DISPATCHER)
-    def uninstall_handler(self, ev):
-        app_id = ev.app_id
+    def uninstall_app(self, app_id):
         app_info = self.available_app[app_id]
         # TODO: such dirty, fix it!
         app_name = app_info[0].split('.')[-1]
