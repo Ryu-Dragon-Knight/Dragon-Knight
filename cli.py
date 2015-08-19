@@ -12,7 +12,7 @@ if six.PY2:
 else:
     import urllib3 as urllib
 
-CLI_BASE_URL = 'http://127.0.0.1:8080'
+CLI_BASE_URL = 'http://127.0.0.1:5566'
 CLI_LIST_PATH = '/list'
 CLI_INSTALL_PATH = '/install'
 CLI_UNINSTALL_PATH = '/uninstall'
