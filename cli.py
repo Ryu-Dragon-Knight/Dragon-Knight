@@ -28,7 +28,10 @@ def http_get(url):
     result = None
 
     if six.PY2:
-        response = urllib.urlopen(url)
+        try:
+            response = urllib.urlopen(url)
+        except urllib.URLError as e:
+            return e.reason
         result = json.load(response)
 
     else:
@@ -50,7 +53,10 @@ def http_post(url, req_body):
     result = None
 
     if six.PY2:
-        response = urllib.urlopen(url, data=req_body)
+        try:
+            response = urllib.urlopen(url, data=req_body)
+        except urllib.URLError as e:
+            return e.reason
         result = json.load(response)
 
     else:
