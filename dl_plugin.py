@@ -45,7 +45,9 @@ class DynamicLoader(app_manager.RyuApp):
                     _attr = getattr(_app_module, _attr_name)
 
                     if inspect.isclass(_attr) and _attr.__bases__[0] == RyuApp:
-                        LOG.debug('\tFind ryu app : %s.%s', _attr.__module__, _attr.__name__)
+                        LOG.debug('\tFind ryu app : %s.%s',
+                            _attr.__module__,
+                            _attr.__name__)
                         _full_name = '%s.%s' % (_attr.__module__, _attr.__name__)
                         self.available_app.append((_full_name, _attr))
 
@@ -76,7 +78,8 @@ class DynamicLoader(app_manager.RyuApp):
 
         for app_info in self.available_app:
             _cls = app_info[1]
-            _installed_apps_cls = [obj.__class__ for obj in _installed_apps.values()]
+            _installed_apps_cls =
+                [obj.__class__ for obj in _installed_apps.values()]
 
             if _cls in _installed_apps_cls:
                 res.append({'name': app_info[0], 'installed': True})
@@ -95,7 +98,8 @@ class DynamicLoader(app_manager.RyuApp):
             app_cls = self.available_app[app_id][1]
             app_contexts = app_cls._CONTEXTS
             _installed_apps = self.ryu_mgr.applications
-            _installed_apps_cls = [obj.__class__ for obj in _installed_apps.values()]
+            _installed_apps_cls =
+                [obj.__class__ for obj in _installed_apps.values()]
 
             if app_cls in _installed_apps_cls:
                 # app was installed
@@ -139,5 +143,3 @@ class DynamicLoader(app_manager.RyuApp):
             app = self.ryu_mgr.applications[app_name]
             self.ryu_mgr.uninstantiate(app_name)
             app.stop()
-
-
