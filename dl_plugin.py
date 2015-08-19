@@ -2,11 +2,11 @@
 import logging
 import pkgutil
 import inspect
-import dl_lib
+import dl_lib, dl_event
+from ryu import app as ryu_app
 from ryu.base import app_manager
 from ryu.controller.handler import MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
-from ryu import app as ryu_app
 from ryu.base.app_manager import RyuApp, AppManager
 
 
@@ -19,10 +19,23 @@ def deep_import(mod_name):
         mod = getattr(mod, comp)
     return mod
 
+def create_context(app_name, app_cls):
+
+    if issubclass(cls, RyuApp):
+        context = self._instantiate(None, cls)
+    else:
+        context = cls()
+
+    LOG.info('creating context %s', key)
+    assert key not in self.contexts
+    self.contexts[key] = context
+
 class DynamicLoader(app_manager.RyuApp):
+
     _CONTEXTS = {
         'dl_lib': dl_lib.DynamicLoaderLib
     }
+
     def __init__(self, *args, **kwargs):
         super(DynamicLoader, self).__init__(*args, **kwargs)
         self.ryu_mgr = AppManager.get_instance()
@@ -47,14 +60,11 @@ class DynamicLoader(app_manager.RyuApp):
                         _full_name = '%s.%s' % (_attr.__module__, _attr.__name__)
                         self.available_app.append((_full_name, _attr))
 
-                
-
-
             except ImportError:
                 LOG.debug('Import Error')
 
 
-    @set_ev_cls(dl_lib.EventAppListRequst, MAIN_DISPATCHER)
+    @set_ev_cls(dl_event.EventAppListRequst, MAIN_DISPATCHER)
     def list_handler(self, req):
         res = []
         _installed_apps = self.ryu_mgr.applications
@@ -69,12 +79,11 @@ class DynamicLoader(app_manager.RyuApp):
             else:
                 res.append({'name': app_info[0], 'installed': False})
 
-
-        rep = dl_lib.EventAppListReply(req.src, res)
+        rep = dl_event.EventAppListReply(req.src, res)
         self.reply_to_request(req, rep)
 
 
-    @set_ev_cls(dl_lib.EventAppInstall, MAIN_DISPATCHER)
+    @set_ev_cls(dl_event.EventAppInstall, MAIN_DISPATCHER)
     def install_handler(self, ev):
         try:
             app_id = ev.app_id
@@ -101,12 +110,16 @@ class DynamicLoader(app_manager.RyuApp):
             raise ex
 
 
-    @set_ev_cls(dl_lib.EventAppUninstall, MAIN_DISPATCHER)
+    @set_ev_cls(dl_event.EventAppUninstall, MAIN_DISPATCHER)
     def uninstall_handler(self, ev):
         app_id = ev.app_id
         app_info = self.available_app[app_id]
         # TODO: such dirty, fix it!
         app_name = app_info[0].split('.')[-1]
-        self.ryu_mgr.uninstantiate(app_name)
+
+        if app_name in self.ryu_mgr.applications:
+            app = self.ryu_mgr.applications[app_name]
+            self.ryu_mgr.uninstantiate(app_name)
+            app.stop()
 
 
