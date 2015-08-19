@@ -22,7 +22,6 @@ def main():
             msg = json.dumps({'cmd': 'list'})
             sc.sendall(msg)
             buf = sc.recv(2048)
-            print buf
             app_list = json.loads(buf)
             app_id = 0
 
