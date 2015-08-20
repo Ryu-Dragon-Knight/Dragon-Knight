@@ -81,9 +81,9 @@ class DlCli(cmd.Cmd):
     Ryu dynamic loader command line
     """
 
-    msg = 'Welcome to the Ryu CLI. Type help or ? to list commands.\n'
+    _msg = 'Welcome to the Ryu CLI. Type help or ? to list commands.\n'
 
-    anscii_art = """
+    _anscii_art = """
         ____
        / __ \__  ____  __
       / /_/ / / / / / / /
@@ -92,13 +92,13 @@ class DlCli(cmd.Cmd):
           /____/
     """
 
-    hint_msg = """
-        \n\nHit '{0}<Tab>{1}' key to auto-complete the commands \
+    _hint_msg = """
+    \n\nHit '{0}<Tab>{1}' key to auto-complete the commands \
     \nand '{0}<ctrl-d>{1}' or type '{0}exit{1}' to exit Ryu CLI.\n
     """.format(Bcolors.BOLD, Bcolors.ENDC)
 
-    intro = (msg + Bcolors.OKGREEN + anscii_art + Bcolors.ENDC +
-             hint_msg +  Bcolors.ENDC)
+    intro = (_msg + Bcolors.OKGREEN + _anscii_art + Bcolors.ENDC +
+             _hint_msg + Bcolors.ENDC)
 
     prompt = Bcolors.WARNING + 'ryu-cli> ' + Bcolors.ENDC
 
