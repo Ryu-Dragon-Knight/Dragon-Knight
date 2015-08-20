@@ -66,12 +66,41 @@ def http_post(url, req_body):
 
     return result
 
+class Bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 class DlCli(cmd.Cmd):
     """
     Ryu dynamic loader command line
     """
-    intro = 'Welcome to the Ryu CLI. Type help or ? to list commands.\n'
-    prompt = '(ryu-cli) '
+
+    _msg = 'Welcome to the Ryu CLI. Type help or ? to list commands.\n'
+
+    _anscii_art = """
+        ____
+       / __ \__  ____  __
+      / /_/ / / / / / / /
+     / _, _/ /_/ / /_/ /
+    /_/ |_|\__, /\__,_/
+          /____/
+    """
+
+    _hint_msg = """
+    \n\nHit '{0}<Tab>{1}' key to auto-complete the commands \
+    \nand '{0}<ctrl-d>{1}' or type '{0}exit{1}' to exit Ryu CLI.\n
+    """.format(Bcolors.BOLD, Bcolors.ENDC)
+
+    intro = (_msg + Bcolors.OKGREEN + _anscii_art + Bcolors.ENDC +
+             _hint_msg + Bcolors.ENDC)
+
+    prompt = Bcolors.WARNING + 'ryu-cli> ' + Bcolors.ENDC
 
     def do_list(self, line):
         '''
@@ -90,7 +119,8 @@ class DlCli(cmd.Cmd):
             print('[%02d] %s' % (app_id, app_info['name']), end='')
 
             if app_info['installed']:
-                print(' [\033[92minstalled\033[0m]')
+                print(' [' + Bcolors.OKGREEN + 'installed' +
+                      Bcolors.ENDC + ']')
             else:
                 print('')
 
@@ -117,7 +147,7 @@ class DlCli(cmd.Cmd):
             return
 
         if result['result'] == 'ok':
-            print('Install successfully')
+            print('Successfully installed!')
 
         else:
             print(result['details'])
@@ -143,10 +173,14 @@ class DlCli(cmd.Cmd):
             return
 
         if result['result'] == 'ok':
-            print('Uninstall successfully')
+            print('Successfully uninstalled!')
 
         else:
             print(result['details'])
+
+    def default(self, line):
+        fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC
+        print (fail_msg)
 
     def do_exit(self, line):
         '''
