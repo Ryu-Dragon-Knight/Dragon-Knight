@@ -79,13 +79,18 @@ class DlCli(cmd.Cmd):
         '''
 
         app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+
+        if not type(app_list) == list:
+            print(app_list)
+            return False
+
         app_id = 0
 
         for app_info in app_list:
             print('[%02d] %s' % (app_id, app_info['name']), end='')
 
             if app_info['installed']:
-                print('[\033[92minstalled\033[0m]')
+                print(' [\033[92minstalled\033[0m]')
             else:
                 print('')
 
@@ -106,7 +111,17 @@ class DlCli(cmd.Cmd):
 
         req_body = json.dumps({'app_id':app_id})
         result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
-        print(result)
+
+        if not type(result) == dict:
+            print(result)
+            return
+
+        if result['result'] == 'ok':
+            print('Install successfully')
+
+        else:
+            print(result['details'])
+
 
     def do_uninstall(self, line):
         '''
@@ -122,7 +137,16 @@ class DlCli(cmd.Cmd):
 
         req_body = json.dumps({'app_id':app_id})
         result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
-        print(result)
+
+        if not type(result) == dict:
+            print(result)
+            return
+
+        if result['result'] == 'ok':
+            print('Uninstall successfully')
+
+        else:
+            print(result['details'])
 
     def do_exit(self, line):
         '''
