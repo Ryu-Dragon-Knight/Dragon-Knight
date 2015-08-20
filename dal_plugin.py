@@ -14,6 +14,7 @@ from ryu.base.app_manager import RyuApp, AppManager
 from dal_lib import DLController
 
 
+_REQUIRED_APP = ['ryu.controller.ofp_handler']
 LOG = logging.getLogger('DynamicLoader')
 
 def deep_import(mod_name):
