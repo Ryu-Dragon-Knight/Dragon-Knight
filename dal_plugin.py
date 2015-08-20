@@ -11,7 +11,7 @@ from ryu.controller.handler import MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.base.app_manager import RyuApp, AppManager
 
-from dl_lib import DLController
+from dal_lib import DLController
 
 
 LOG = logging.getLogger('DynamicLoader')

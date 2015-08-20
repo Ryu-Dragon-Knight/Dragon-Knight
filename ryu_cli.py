@@ -160,7 +160,7 @@ class DlCli(cmd.Cmd):
         '''
         return True
 
-if __name__ == '__main__':
+def main(args=None):
     '''
     Usage:
         ./cli [Base url]
@@ -172,3 +172,6 @@ if __name__ == '__main__':
         CLI_BASE_URL = sys.argv[1]
 
     DlCli().cmdloop()
+
+if __name__ == '__main__':
+    main()
