@@ -14,7 +14,7 @@ I wrote a ryu application and control app manager directly, the code is very sim
 Tested environment
 --------------
  1. ryu v3.22 or newer version
- 2. Python 3.4
+ 2. Python 2.7/3.4
 
 How to use it?
 --------------
@@ -32,9 +32,9 @@ For now, this plugin provide :
  2. install: install a ryu application by id
  3. uninstall: uninstall a ryu application
 
-TODO List
+TODO
 --------------
-1. Change from python 2.7 to python 3.4 (Done !)
+1. Support both python 2.7 and python 3.4 (Done !)
 2. Use python cmd module to implement it!(Done !)
 3. Change from socket to REST API (Done !)
 
