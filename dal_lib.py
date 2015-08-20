@@ -51,6 +51,14 @@ class DLController(ControllerBase):
         return {'result': 'ok'}
 
     @rest_command
+    def install_external_app(self, req, **_kwargs):
+        body = json.loads(req.body)
+        path = body['path']
+
+        self.ryu_app.install_external_app(path)
+        return {'result': 'ok'}
+
+    @rest_command
     def uninstall_app(self, req, **_kwargs):
         body = json.loads(req.body)
         app_id = int(body['app_id'])

@@ -15,6 +15,7 @@ else:
 CLI_BASE_URL = 'http://127.0.0.1:5566'
 CLI_LIST_PATH = '/list'
 CLI_INSTALL_PATH = '/install'
+CLI_INSTALLEX_PATH = '/install-ex'
 CLI_UNINSTALL_PATH = '/uninstall'
 
 def http_get(url):
@@ -122,6 +123,24 @@ class DlCli(cmd.Cmd):
         else:
             print(result['details'])
 
+    def do_installex(self, line):
+        '''
+        Install external ryu application
+        Usage:
+            install [app path]
+        '''
+        req_body = json.dumps({'path':line})
+        result = http_post(CLI_BASE_URL + CLI_INSTALLEX_PATH, req_body)
+
+        if not type(result) == dict:
+            print(result)
+            return
+
+        if result['result'] == 'ok':
+            print('Install successfully')
+
+        else:
+            print(result['details'])
 
     def do_uninstall(self, line):
         '''
