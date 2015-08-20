@@ -82,7 +82,7 @@ class DlCli(cmd.Cmd):
         app_id = 0
 
         for app_info in app_list:
-            print('[%02d]%s' % (app_id, app_info['name']), end='')
+            print('[%02d] %s' % (app_id, app_info['name']), end='')
 
             if app_info['installed']:
                 print('[\033[92minstalled\033[0m]')
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     Usage:
         ./cli [Base url]
 
-        Base url: RESTful API server base url, default is http://127.0.0.1:8080
+        Base url: RESTful API server base url, default is http://127.0.0.1:5566
     '''
     import sys
     if len(sys.argv) >= 2:
