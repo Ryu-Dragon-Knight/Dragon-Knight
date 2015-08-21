@@ -18,12 +18,12 @@ Tested environment
 
 How to use it?
 --------------
-Start ryu application with dl_plugin
-> $ ryu-manager dl_plugin ryu.controller.ofp_handler
+Start ryu manager with dal_plugin
+> $ ryu-manager dal_plugin
 
 And start cli.py, and you can use it!
 
-> $ ./cli.py
+> $ ./ryu_cli.py
 
 What command I can use?
 --------------
