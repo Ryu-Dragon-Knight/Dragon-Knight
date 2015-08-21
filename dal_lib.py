@@ -5,6 +5,9 @@ from webob import Response
 from ryu.app.wsgi import ControllerBase
 from ryu.app.wsgi import WSGIApplication
 
+LOG = logging.getLogger('DLController')
+
+
 # REST command template
 def rest_command(func):
     def _rest_command(*args, **kwargs):
@@ -26,7 +29,7 @@ def rest_command(func):
 
     return _rest_command
 
-LOG = logging.getLogger('DLController')
+
 class DLController(ControllerBase):
 
     def __init__(self, req, link, data, **config):
@@ -36,6 +39,10 @@ class DLController(ControllerBase):
     @rest_command
     def list_all_apps(self, req, **_kwargs):
         return self.ryu_app.list_all_apps()
+
+    @rest_command
+    def list_installed_app(self, req, **_kwargs):
+        return self.ryu_app.list_installed_apps()
 
     @rest_command
     def install_app(self, req, **_kwargs):

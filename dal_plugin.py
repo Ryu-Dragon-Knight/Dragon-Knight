@@ -81,6 +81,10 @@ class DynamicLoader(RyuApp):
                        action='install_app',
                        conditions=dict(method=['POST']))
 
+        mapper.connect('list', '/installed', controller=DLController,
+                       action='list_installed_app',
+                       conditions=dict(method=['GET']))
+
         mapper.connect('list', '/uninstall', controller=DLController,
                        action='uninstall_app',
                        conditions=dict(method=['POST']))
@@ -214,3 +218,9 @@ class DynamicLoader(RyuApp):
             raise ex
 
         self._install_app(app_cls)
+
+    def list_installed_apps(self):
+        res = []
+        installed_apps = self.ryu_mgr.applications.values()
+        res = [installed_app.__module__ for installed_app in installed_apps]
+        return res
