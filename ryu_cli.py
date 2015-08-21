@@ -16,6 +16,7 @@ CLI_BASE_URL = 'http://127.0.0.1:5566'
 CLI_LIST_PATH = '/list'
 CLI_INSTALL_PATH = '/install'
 CLI_INSTALLED_PATH = '/installed'
+CLI_BRICKS_PATH = '/bricks'
 CLI_UNINSTALL_PATH = '/uninstall'
 
 
@@ -213,6 +214,20 @@ class DlCli(cmd.Cmd):
                            ]
 
         return completions
+
+    def do_bricks(self, line):
+        bricks = http_get(CLI_BASE_URL + CLI_BRICKS_PATH)
+
+        print('{}Bricks:{}'.format(Bcolors.OKBLUE, Bcolors.ENDC))
+        for name in bricks:
+            brick = bricks[name]
+            print('BRICK {}'.format(name))
+
+            for provide_ev in brick['provide']:
+                print('PROVIDES {} to {}'.format(provide_ev[0], provide_ev[1]))
+
+            for consume_ev in brick['consume']:
+                print('CONSUMES {}'.format(consume_ev))
 
     def default(self, line):
         fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC

@@ -45,6 +45,10 @@ class DLController(ControllerBase):
         return self.ryu_app.list_installed_apps()
 
     @rest_command
+    def report_brick(self, req, **_kwargs):
+        return self.ryu_app.report_brick()
+
+    @rest_command
     def install_app(self, req, **_kwargs):
         body = json.loads(req.body)
         path = body['path']

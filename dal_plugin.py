@@ -89,6 +89,10 @@ class DynamicLoader(RyuApp):
                        action='uninstall_app',
                        conditions=dict(method=['POST']))
 
+        mapper.connect('list', '/bricks', controller=DLController,
+                       action='report_brick',
+                       conditions=dict(method=['GET']))
+
     def create_context(self, key, cls):
         context = None
 
@@ -223,4 +227,16 @@ class DynamicLoader(RyuApp):
         res = []
         installed_apps = self.ryu_mgr.applications.values()
         res = [installed_app.__module__ for installed_app in installed_apps]
+        return res
+
+    def report_brick(self):
+        res = {}
+
+        for name, app in app_manager.SERVICE_BRICKS.items():
+            res.setdefault(name, {'provide': [], 'consume': []})
+            for ev_cls, list_ in app.observers.items():
+                res[name]['provide'].append((ev_cls.__name__, [capp for capp in list_]))
+            for ev_cls in app.event_handlers.keys():
+                res[name]['consume'].append((ev_cls.__name__))
+
         return res
