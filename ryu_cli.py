@@ -192,6 +192,26 @@ class DlCli(cmd.Cmd):
         else:
             print(result['details'])
 
+    def complete_uninstall(self, text, line, begidx, endidx):
+        if not self.app_list:
+            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+
+        if not text:
+            completions = [
+                            app_info['name']
+                            for app_info in self.app_list
+                            if app_info['installed']
+                          ]
+
+        else:
+            completions = [ app_info['name']
+                            for app_info in self.app_list
+                            if app_info['name'].startswith(text) and
+                            app_info['installed']
+                          ]
+
+        return completions
+
     def default(self, line):
         fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC
         print (fail_msg)
