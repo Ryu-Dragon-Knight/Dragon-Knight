@@ -111,59 +111,52 @@ class DynamicLoader(RyuApp):
                 [obj.__class__ for obj in installed_apps.values()]
 
             if _cls in installed_apps_cls:
-                res.append({'name': app_info[0], 'installed': True})
+                res.append({
+                    'name': app_info[0],
+                    'installed': True
+                })
 
             else:
-                res.append({'name': app_info[0], 'installed': False})
+                res.append({
+                    'name': app_info[0],
+                    'installed': False
+                })
 
         return res
 
+    def _install_app(self, app_cls):
+        app_contexts = app_cls._CONTEXTS
+        installed_apps = self.ryu_mgr.applications
+        installed_apps_cls =\
+            [obj.__class__ for obj in installed_apps.values()]
 
-    def install_app(self, app_id):
-        try:
-            app_cls = self.available_app[app_id][1]
-            app_contexts = app_cls._CONTEXTS
-            installed_apps = self.ryu_mgr.applications
-            installed_apps_cls =\
-                [obj.__class__ for obj in installed_apps.values()]
-
-            if app_cls in installed_apps_cls:
-                # app was installed
-                LOG.debug('Application already installed')
-                return
-            new_contexts = []
-
-            for k in app_contexts:
-                context_cls = app_contexts[k]
-                ctx = self.create_context(k, context_cls)
-
-                if ctx and issubclass(context_cls, RyuApp):
-                    new_contexts.append(ctx)
-
-            app = self.ryu_mgr.instantiate(app_cls, **self.ryu_mgr.contexts)
-            new_contexts.append(app)
-
-            for ctx in new_contexts:
-                t = ctx.start()
-                # t should be join to some where?
-
-        except IndexError:
-            LOG.debug('Can\'t find application with id %d', app_id)
-            ex = IndexError('Can\'t find application with id %d' % (app_id, ))
+        if app_cls in installed_apps_cls:
+            # app was installed
+            LOG.debug('Application already installed')
+            ex = ValueError('Application already installed')
             raise ex
 
-        except ValueError:
-            LOG.debug('ryu-app-id must be number')
+        new_contexts = []
 
-        except Exception, ex:
-            LOG.debug('Import error for id: %d', app_id)
-            raise ex
+        for k in app_contexts:
+            context_cls = app_contexts[k]
+            ctx = self.create_context(k, context_cls)
 
+            if ctx and issubclass(context_cls, RyuApp):
+                new_contexts.append(ctx)
+
+        app = self.ryu_mgr.instantiate(app_cls, **self.ryu_mgr.contexts)
+        new_contexts.append(app)
+
+        for ctx in new_contexts:
+            t = ctx.start()
+            # t should be join to some where?
 
     def uninstall_app(self, app_id):
         app_info = self.available_app[app_id]
         # TODO: such dirty, fix it!
         app_name = app_info[0].split('.')[-1]
+        print(app_name)
         if app_name not in self.ryu_mgr.applications:
             raise ValueError('Can\'t find application')
 
@@ -203,3 +196,19 @@ class DynamicLoader(RyuApp):
 
                 # handler hacking, remove all stream handler to avoid it log many times!
                 ctx.logger.handlers = []
+
+    def install_app(self, path):
+        context_modules = [x.__module__ for x in self.ryu_mgr.contexts_cls.values()]
+
+        if path in context_modules:
+            ex = ValueError('Application already exist in contexts')
+            raise ex
+
+        LOG.info('loading app %s', path)
+        app_cls = self.ryu_mgr.load_app(path)
+
+        if app_cls is None:
+            ex = ValueError('Can\'t find application module')
+            raise ex
+
+        self._install_app(app_cls)

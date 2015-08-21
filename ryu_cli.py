@@ -126,20 +126,15 @@ class DlCli(cmd.Cmd):
 
             app_id += 1
 
-
     def do_install(self, line):
         '''
-        Install ryu application
+        Install ryu application by using module path
         Usage:
-            install [app_id]
+            install [app path]
+        Example:
+            install ryu.app.simple_switch
         '''
-        try:
-            app_id = int(line)
-        except ValueError:
-            print('Application id must be integer')
-            return
-
-        req_body = json.dumps({'app_id':app_id})
+        req_body = json.dumps({'path':line})
         result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
 
         if not type(result) == dict:
@@ -151,7 +146,6 @@ class DlCli(cmd.Cmd):
 
         else:
             print(result['details'])
-
 
     def do_uninstall(self, line):
         '''
