@@ -156,7 +156,7 @@ class DynamicLoader(RyuApp):
             LOG.debug('ryu-app-id must be number')
 
         except Exception, ex:
-            LOG.debug('Import error for id: %d', ex.app_id)
+            LOG.debug('Import error for id: %d', app_id)
             raise ex
 
 
