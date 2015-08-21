@@ -170,15 +170,11 @@ class DlCli(cmd.Cmd):
         '''
         Uninstall ryu application
         Usage:
-            uninstall [app_id]
+            uninstall [application module path]
+        Example:
+            uninstall ryu.app.simple_switch
         '''
-        try:
-            app_id = int(line)
-        except ValueError:
-            print('Application id must be integer')
-            return
-
-        req_body = json.dumps({'app_id':app_id})
+        req_body = json.dumps({'path':line})
         result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
 
         if not type(result) == dict:
@@ -190,6 +186,26 @@ class DlCli(cmd.Cmd):
 
         else:
             print(result['details'])
+
+    def complete_uninstall(self, text, line, begidx, endidx):
+
+        self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+
+        if not text:
+            completions = [
+                            app_info['name']
+                            for app_info in self.app_list
+                            if app_info['installed']
+                          ]
+
+        else:
+            completions = [ app_info['name']
+                            for app_info in self.app_list
+                            if app_info['name'].startswith(text) and
+                            app_info['installed']
+                          ]
+
+        return completions
 
     def default(self, line):
         fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC

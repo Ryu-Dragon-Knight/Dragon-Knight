@@ -48,11 +48,7 @@ class DLController(ControllerBase):
     @rest_command
     def uninstall_app(self, req, **_kwargs):
         body = json.loads(req.body)
-        app_id = int(body['app_id'])
+        path = body['path']
 
-        if app_id < 0:
-            e = ValueError('app id must grater than 0')
-            raise e
-
-        self.ryu_app.uninstall_app(app_id)
+        self.ryu_app.uninstall_app(path)
         return {'result': 'ok'}

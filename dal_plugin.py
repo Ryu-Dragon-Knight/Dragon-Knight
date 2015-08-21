@@ -152,20 +152,22 @@ class DynamicLoader(RyuApp):
             t = ctx.start()
             # t should be join to some where?
 
-    def uninstall_app(self, app_id):
-        app_info = self.available_app[app_id]
-        # TODO: such dirty, fix it!
-        app_name = app_info[0].split('.')[-1]
-        print(app_name)
-        if app_name not in self.ryu_mgr.applications:
+    def uninstall_app(self, path):
+        app_cls = self.ryu_mgr.load_app(path)
+        app = None
+
+        for _app in self.ryu_mgr.applications.values():
+            if isinstance(_app, app_cls):
+                app = _app
+                break
+
+        else:
             raise ValueError('Can\'t find application')
 
-        app = self.ryu_mgr.applications[app_name]
-        self.ryu_mgr.uninstantiate(app_name)
+        self.ryu_mgr.uninstantiate(app.name)
         app.stop()
 
         # after we stoped application, chack it context
-        app_cls = app_info[1]
         app_contexts = app_cls._CONTEXTS
         installed_apps = self.ryu_mgr.applications
         installed_apps_cls =\
