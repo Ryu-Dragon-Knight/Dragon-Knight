@@ -196,19 +196,20 @@ class DlCli(cmd.Cmd):
 
     def complete_uninstall(self, text, line, begidx, endidx):
 
-        self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+        installed_list = http_get(CLI_BASE_URL + CLI_INSTALLED_PATH)
+
+        if not type(installed_list) == list:
+            return []
 
         if not text:
-            completions = [app_info['name']
-                           for app_info in self.app_list
-                           if app_info['installed']
+            completions = [installed_mod
+                           for installed_mod in installed_list
                            ]
 
         else:
-            completions = [app_info['name']
-                           for app_info in self.app_list
-                           if app_info['name'].startswith(text) and
-                           app_info['installed']
+            completions = [installed_mod
+                           for installed_mod in installed_list
+                           if installed_mod.startswith(text)
                            ]
 
         return completions
