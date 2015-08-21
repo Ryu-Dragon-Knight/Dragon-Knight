@@ -111,8 +111,7 @@ class DlCli(cmd.Cmd):
         List all available applications.
         '''
 
-        if not self.app_list:
-            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+        self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
         if not type(self.app_list) == list:
             print(self.app_list)
@@ -153,8 +152,8 @@ class DlCli(cmd.Cmd):
             print(result['details'])
 
     def complete_install(self, text, line, begidx, endidx):
-        if not self.app_list:
-            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+
+        self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
         if not text:
             completions = [app_info['name'] for app_info in self.app_list]
