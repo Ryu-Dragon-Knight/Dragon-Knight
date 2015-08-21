@@ -189,8 +189,8 @@ class DlCli(cmd.Cmd):
             print(result['details'])
 
     def complete_uninstall(self, text, line, begidx, endidx):
-        if not self.app_list:
-            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+
+        self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
         if not text:
             completions = [
