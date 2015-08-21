@@ -39,7 +39,7 @@ TODO
 3. [x] Change from socket to REST API
 4. [x] Allow user install external ryu application
 5. [x] Uninstall application by using module name
-6. [ ] Display applications that doesn't exist in ryu.app module
+6. [x] Display applications that doesn't exist in ryu.app module
 7. [x] Make command line interface pretty
 8. [ ] Display more information from ryu application manager
 9. [ ] Topology information
