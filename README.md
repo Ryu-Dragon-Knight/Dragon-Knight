@@ -41,7 +41,7 @@ TODO
 5. [x] Uninstall application by using module name
 6. [x] Display applications that doesn't exist in ryu.app module
 7. [x] Make command line interface pretty
-8. [ ] Display more information from ryu application manager
+8. [x] Display bricks information from ryu application manager
 9. [ ] Topology information
 10. [ ] Dump flows from datapath
 11. [x] Auto complete application module name/path
