@@ -171,15 +171,11 @@ class DlCli(cmd.Cmd):
         '''
         Uninstall ryu application
         Usage:
-            uninstall [app_id]
+            uninstall [application module path]
+        Example:
+            uninstall ryu.app.simple_switch
         '''
-        try:
-            app_id = int(line)
-        except ValueError:
-            print('Application id must be integer')
-            return
-
-        req_body = json.dumps({'app_id':app_id})
+        req_body = json.dumps({'path':line})
         result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
 
         if not type(result) == dict:
