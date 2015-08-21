@@ -161,25 +161,11 @@ class DynamicLoader(RyuApp):
             t = ctx.start()
             # t should be join to some where?
 
-    def install_app(self, app_id):
-        try:
-            app_cls = self.available_app[app_id][1]
-            self._install_app(app_cls)
-
-        except IndexError:
-            LOG.debug('Can\'t find application with id %d', app_id)
-            ex = IndexError('Can\'t find application with id %d' % (app_id, ))
-            raise ex
-
-        except Exception, ex:
-            LOG.debug('Import error for id: %d', ex.app_id)
-            raise ex
-
-
     def uninstall_app(self, app_id):
         app_info = self.available_app[app_id]
         # TODO: such dirty, fix it!
         app_name = app_info[0].split('.')[-1]
+        print(app_name)
         if app_name not in self.ryu_mgr.applications:
             raise ValueError('Can\'t find application')
 
@@ -220,7 +206,7 @@ class DynamicLoader(RyuApp):
                 # handler hacking, remove all stream handler to avoid it log many times!
                 ctx.logger.handlers = []
 
-    def install_external_app(self, path):
+    def install_app(self, path):
         context_modules = [x.__module__ for x in self.ryu_mgr.contexts_cls.values()]
 
         if path in context_modules:

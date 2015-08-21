@@ -37,25 +37,12 @@ class DLController(ControllerBase):
     def list_all_apps(self, req, **_kwargs):
         return self.ryu_app.list_all_apps()
 
-
     @rest_command
     def install_app(self, req, **_kwargs):
         body = json.loads(req.body)
-        app_id = int(body['app_id'])
-
-        if app_id < 0:
-            e = ValueError('app id must grater than 0')
-            raise e
-
-        self.ryu_app.install_app(app_id)
-        return {'result': 'ok'}
-
-    @rest_command
-    def install_external_app(self, req, **_kwargs):
-        body = json.loads(req.body)
         path = body['path']
 
-        self.ryu_app.install_external_app(path)
+        self.ryu_app.install_app(path)
         return {'result': 'ok'}
 
     @rest_command
