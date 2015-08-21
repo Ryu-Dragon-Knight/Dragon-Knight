@@ -17,6 +17,7 @@ CLI_LIST_PATH = '/list'
 CLI_INSTALL_PATH = '/install'
 CLI_UNINSTALL_PATH = '/uninstall'
 
+
 def http_get(url):
     '''
     do http GET method
@@ -40,6 +41,7 @@ def http_get(url):
         result = json.loads(response.data.decode('utf8'))
 
     return result
+
 
 def http_post(url, req_body):
     '''
@@ -66,6 +68,7 @@ def http_post(url, req_body):
 
     return result
 
+
 class Bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -75,6 +78,7 @@ class Bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
 
 class DlCli(cmd.Cmd):
     """
@@ -138,7 +142,7 @@ class DlCli(cmd.Cmd):
         Example:
             install ryu.app.simple_switch
         '''
-        req_body = json.dumps({'path':line})
+        req_body = json.dumps({'path': line})
         result = http_post(CLI_BASE_URL + CLI_INSTALL_PATH, req_body)
 
         if not type(result) == dict:
@@ -159,10 +163,10 @@ class DlCli(cmd.Cmd):
             completions = [app_info['name'] for app_info in self.app_list]
 
         else:
-            completions = [ app_info['name']
-                            for app_info in self.app_list
-                            if app_info['name'].startswith(text)
-                          ]
+            completions = [app_info['name']
+                           for app_info in self.app_list
+                           if app_info['name'].startswith(text)
+                           ]
 
         return completions
 
@@ -174,7 +178,7 @@ class DlCli(cmd.Cmd):
         Example:
             uninstall ryu.app.simple_switch
         '''
-        req_body = json.dumps({'path':line})
+        req_body = json.dumps({'path': line})
         result = http_post(CLI_BASE_URL + CLI_UNINSTALL_PATH, req_body)
 
         if not type(result) == dict:
@@ -192,18 +196,17 @@ class DlCli(cmd.Cmd):
         self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
         if not text:
-            completions = [
-                            app_info['name']
-                            for app_info in self.app_list
-                            if app_info['installed']
-                          ]
+            completions = [app_info['name']
+                           for app_info in self.app_list
+                           if app_info['installed']
+                           ]
 
         else:
-            completions = [ app_info['name']
-                            for app_info in self.app_list
-                            if app_info['name'].startswith(text) and
-                            app_info['installed']
-                          ]
+            completions = [app_info['name']
+                           for app_info in self.app_list
+                           if app_info['name'].startswith(text) and
+                           app_info['installed']
+                           ]
 
         return completions
 
@@ -222,6 +225,7 @@ class DlCli(cmd.Cmd):
         Use ctrl + D to exit
         '''
         return True
+
 
 def main(args=None):
     '''
