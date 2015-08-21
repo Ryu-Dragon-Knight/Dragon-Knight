@@ -111,8 +111,7 @@ class DlCli(cmd.Cmd):
         List all available applications.
         '''
 
-        if not self.app_list:
-            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+        self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
         if not type(self.app_list) == list:
             print(self.app_list)
