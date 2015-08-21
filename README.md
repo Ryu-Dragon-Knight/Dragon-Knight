@@ -34,13 +34,13 @@ For now, this plugin provide :
 
 TODO
 --------------
-1. Support both python 2.7 and python 3.4 (Done)
-2. Use python cmd module to implement it!(Done)
-3. Change from socket to REST API (Done)
-4. Allow user install external ryu application(Done)
+1. [x] Support both python 2.7 and python 3.4
+2. [x] Use python cmd module to implement it!
+3. [x] Change from socket to REST API
+4. [x] Allow user install external ryu application
 5. Uninstall application by using module name
 6. Display applications that doesn't exist in ryu.app module
-7. Make command line interface pretty(Done)
+7. [x] Make command line interface pretty
 8. Display more information from ryu application manager
 9. Topology information
 10. Dump flows from datapath
