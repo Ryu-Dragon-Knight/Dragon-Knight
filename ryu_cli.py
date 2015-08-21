@@ -238,7 +238,10 @@ def main(args=None):
     if len(sys.argv) >= 2:
         CLI_BASE_URL = sys.argv[1]
 
-    DlCli().cmdloop()
+    try:
+        DlCli().cmdloop()
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == '__main__':
     main()
