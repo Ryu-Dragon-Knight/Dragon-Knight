@@ -17,12 +17,14 @@ from dal_lib import DLController
 _REQUIRED_APP = ['ryu.controller.ofp_handler']
 LOG = logging.getLogger('DynamicLoader')
 
+
 def deep_import(mod_name):
     mod = __import__(mod_name)
     components = mod_name.split('.')
     for comp in components[1:]:
         mod = getattr(mod, comp)
     return mod
+
 
 class DynamicLoader(RyuApp):
 
@@ -43,7 +45,6 @@ class DynamicLoader(RyuApp):
         hub.spawn(webapp.serve_forever)
         return wsgi
 
-
     def init_apps(self):
         # init all available apps
         for _, name, is_pkg in pkgutil.walk_packages(ryu_app.__path__):
@@ -63,8 +64,8 @@ class DynamicLoader(RyuApp):
 
                     if inspect.isclass(_attr) and _attr.__bases__[0] == RyuApp:
                         LOG.debug('\tFind ryu app : %s.%s',
-                            _attr.__module__,
-                            _attr.__name__)
+                                  _attr.__module__,
+                                  _attr.__name__)
                         _full_name = '%s' % (_attr.__module__,)
                         self.available_app.append((_full_name, _attr))
 
@@ -99,7 +100,6 @@ class DynamicLoader(RyuApp):
 
         self.ryu_mgr.contexts.setdefault(key, context)
         return context
-
 
     def list_all_apps(self):
         res = []
@@ -176,7 +176,7 @@ class DynamicLoader(RyuApp):
         for ctx_name in app_contexts:
             for app_cls in installed_apps_cls:
                 if ctx_name in app_cls._CONTEXTS:
-                    break;
+                    break
 
             else:
                 # remove this context
