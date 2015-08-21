@@ -102,20 +102,25 @@ class DlCli(cmd.Cmd):
 
     prompt = Bcolors.WARNING + 'ryu-cli> ' + Bcolors.ENDC
 
+    def __init__(self):
+        cmd.Cmd.__init__(self)
+        self.app_list = None
+
     def do_list(self, line):
         '''
         List all available applications.
         '''
 
-        app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+        if not self.app_list:
+            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
-        if not type(app_list) == list:
-            print(app_list)
+        if not type(self.app_list) == list:
+            print(self.app_list)
             return False
 
         app_id = 0
 
-        for app_info in app_list:
+        for app_info in self.app_list:
             print('[%02d] %s' % (app_id, app_info['name']), end='')
 
             if app_info['installed']:
@@ -146,6 +151,21 @@ class DlCli(cmd.Cmd):
 
         else:
             print(result['details'])
+
+    def complete_install(self, text, line, begidx, endidx):
+        if not self.app_list:
+            self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
+
+        if not text:
+            completions = [app_info['name'] for app_info in self.app_list]
+
+        else:
+            completions = [ app_info['name']
+                            for app_info in self.app_list
+                            if app_info['name'].startswith(text)
+                          ]
+
+        return completions
 
     def do_uninstall(self, line):
         '''
