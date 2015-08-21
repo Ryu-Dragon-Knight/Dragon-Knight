@@ -15,6 +15,7 @@ else:
 CLI_BASE_URL = 'http://127.0.0.1:5566'
 CLI_LIST_PATH = '/list'
 CLI_INSTALL_PATH = '/install'
+CLI_INSTALLED_PATH = '/installed'
 CLI_UNINSTALL_PATH = '/uninstall'
 
 
@@ -114,25 +115,27 @@ class DlCli(cmd.Cmd):
         '''
         List all available applications.
         '''
-
+        print('{}Available built-in Ryu applications:{}'.format(Bcolors.OKBLUE, Bcolors.ENDC))
         self.app_list = http_get(CLI_BASE_URL + CLI_LIST_PATH)
 
         if not type(self.app_list) == list:
             print(self.app_list)
             return False
 
-        app_id = 0
-
         for app_info in self.app_list:
-            print('[%02d] %s' % (app_id, app_info['name']), end='')
 
-            if app_info['installed']:
-                print(' [' + Bcolors.OKGREEN + 'installed' +
-                      Bcolors.ENDC + ']')
-            else:
-                print('')
+            if not app_info['installed']:
+                print('{}'.format(app_info['name']))
 
-            app_id += 1
+        print('\n{}Installed Ryu applications:{}'.format(Bcolors.OKBLUE, Bcolors.ENDC))
+        installed_list = http_get(CLI_BASE_URL + CLI_INSTALLED_PATH)
+
+        if not type(installed_list) == list:
+            print(installed_list)
+            return False
+
+        for install_mod in installed_list:
+            print('{}'.format(install_mod))
 
     def do_install(self, line):
         '''
