@@ -10,11 +10,12 @@ from ryu.base import app_manager
 from ryu.controller.handler import MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.base.app_manager import RyuApp, AppManager
+from ryu.topology import api as topo_api
 
 from dal_lib import DLController
 
 
-_REQUIRED_APP = ['ryu.controller.ofp_handler']
+_REQUIRED_APP = ['ryu.controller.ofp_handler', 'ryu.topology.switches']
 LOG = logging.getLogger('DynamicLoader')
 
 
@@ -91,6 +92,18 @@ class DynamicLoader(RyuApp):
 
         mapper.connect('list', '/bricks', controller=DLController,
                        action='report_brick',
+                       conditions=dict(method=['GET']))
+
+        mapper.connect('list', '/switches', controller=DLController,
+                       action='list_switches',
+                       conditions=dict(method=['GET']))
+
+        mapper.connect('list', '/links', controller=DLController,
+                       action='list_links',
+                       conditions=dict(method=['GET']))
+
+        mapper.connect('list', '/hosts', controller=DLController,
+                       action='list_hosts',
                        conditions=dict(method=['GET']))
 
     def create_context(self, key, cls):
@@ -240,3 +253,15 @@ class DynamicLoader(RyuApp):
                 res[name]['consume'].append((ev_cls.__name__))
 
         return res
+
+    def list_switches(self):
+        switches = topo_api.get_all_switch(self)
+        return [switch.to_dict() for switch in switches]
+
+    def list_links(self):
+        links = topo_api.get_all_link(self)
+        return [link.to_dict() for link in links]
+
+    def list_hosts(self):
+        hosts = topo_api.get_all_host(self)
+        return [host.to_dict() for host in hosts]
