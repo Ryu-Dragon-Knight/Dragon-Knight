@@ -31,6 +31,8 @@ For now, this plugin provide :
  1. list: list all available ryu app from ryu.app module
  2. install: install a ryu application by id
  3. uninstall: uninstall a ryu application
+ 4. bricks: Show service bricks from app manager
+ 5. topology: Display topology
 
 TODO
 --------------
@@ -42,13 +44,13 @@ TODO
 6. [x] Display applications that doesn't exist in ryu.app module
 7. [x] Make command line interface pretty
 8. [x] Display bricks information from ryu application manager
-9. [ ] Topology information
+9. [x] Topology information
 10. [ ] Dump flows from datapath
 11. [x] Auto complete application module name/path
 
 Screenshot
 --------------
-![screenshot](https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/screenshot.jpg)
+![screenshot][3]
 
 Contributors
 --------------
@@ -57,3 +59,4 @@ Contributors
 
 [1]: https://github.com/TakeshiTseng
 [2]: https://github.com/John-Lin
+[3]: https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/screenshot.jpg
