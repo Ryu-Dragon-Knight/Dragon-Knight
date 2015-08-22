@@ -7,8 +7,8 @@ This plugin(app) allow ryu install application dynamically without closing ryu p
 
 How does it work?
 ------------------
-I wrote a ryu application and control app manager directly, the code is very simple.
-![How does it work](https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/howitwork.png)
+We wrote a ryu application and control app manager directly, the code is very simple.
+![How does it work][3]
 
 
 Tested environment
@@ -50,7 +50,7 @@ TODO
 
 Screenshot
 --------------
-![screenshot][3]
+![screenshot][4]
 
 Contributors
 --------------
@@ -59,4 +59,5 @@ Contributors
 
 [1]: https://github.com/TakeshiTseng
 [2]: https://github.com/John-Lin
-[3]: https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/screenshot.jpg
+[3]: https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/howitwork.png
+[4]: https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/screenshot.jpg

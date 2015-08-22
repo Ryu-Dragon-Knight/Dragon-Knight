@@ -21,7 +21,7 @@ CLI_INSTALLED_PATH = '/installed'
 CLI_BRICKS_PATH = '/bricks'
 CLI_UNINSTALL_PATH = '/uninstall'
 
-# for topology(use rest_topology app)
+# for topology
 CLI_SWITCHES_PATH = '/switches'
 CLI_LINKS_PATH = '/links'
 CLI_HOSTS_PATH = '/hosts'
@@ -223,6 +223,9 @@ class DlCli(cmd.Cmd):
         return completions
 
     def do_bricks(self, line):
+        '''
+        Show service bricks from app manager
+        '''
         bricks = http_get(CLI_BASE_URL + CLI_BRICKS_PATH)
 
         print('{}Bricks:{}'.format(Bcolors.OKBLUE, Bcolors.ENDC))
