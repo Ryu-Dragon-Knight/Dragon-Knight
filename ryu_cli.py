@@ -6,6 +6,8 @@ import cmd
 import six
 import json
 
+from ascii_topo import print_topo
+
 if six.PY2:
     import urllib2 as urllib
 
@@ -18,6 +20,11 @@ CLI_INSTALL_PATH = '/install'
 CLI_INSTALLED_PATH = '/installed'
 CLI_BRICKS_PATH = '/bricks'
 CLI_UNINSTALL_PATH = '/uninstall'
+
+# for topology(use rest_topology app)
+CLI_SWITCHES_PATH = '/switches'
+CLI_LINKS_PATH = '/links'
+CLI_HOSTS_PATH = '/hosts'
 
 
 def http_get(url):
@@ -228,6 +235,21 @@ class DlCli(cmd.Cmd):
 
             for consume_ev in brick['consume']:
                 print('CONSUMES {}'.format(consume_ev))
+
+    def do_topology(self, line):
+        '''
+        Display current topology
+        '''
+        switches = http_get(CLI_BASE_URL + CLI_SWITCHES_PATH)
+
+        if type(switches) != list:
+            print('Error to fetching topology data, {}'.format(switches))
+            return False
+
+        links = http_get(CLI_BASE_URL + CLI_LINKS_PATH)
+        hosts = http_get(CLI_BASE_URL + CLI_HOSTS_PATH)
+
+        print_topo(switches, links, hosts)
 
     def default(self, line):
         fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC

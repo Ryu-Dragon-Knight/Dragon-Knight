@@ -63,3 +63,15 @@ class DLController(ControllerBase):
 
         self.ryu_app.uninstall_app(path)
         return {'result': 'ok'}
+
+    @rest_command
+    def list_switches(self, req, **_kwargs):
+        return self.ryu_app.list_switches()
+
+    @rest_command
+    def list_links(self, req, **_kwargs):
+        return self.ryu_app.list_links()
+
+    @rest_command
+    def list_hosts(self, req, **_kwargs):
+        return self.ryu_app.list_hosts()
