@@ -34,20 +34,22 @@ For now, this plugin provide :
  4. bricks: Show service bricks from app manager
  5. topology: Display topology
 
+Features
+--------------
+[x] Support both python 2.7 and python 3.4
+[x] Provide REST API
+[x] Allow user install external ryu application
+[x] Display applications that doesn't exist in ryu.app module
+[x] Beautiful command line interface
+[x] Ascii-style topology information
+[x] Auto complete application module name/path
+[x] Display bricks relationship
+[ ] [More features!][5]
+
 TODO
 --------------
-1. [x] Support both python 2.7 and python 3.4
-2. [x] Use python cmd module to implement it!
-3. [x] Change from socket to REST API
-4. [x] Allow user install external ryu application
-5. [x] Uninstall application by using module name
-6. [x] Display applications that doesn't exist in ryu.app module
-7. [x] Make command line interface pretty
-8. [x] Display bricks information from ryu application manager
-9. [x] Topology information
-10. [ ] Dump flows from datapath
-11. [x] Auto complete application module name/path
-12. [ ] Pretty web UI
+[ ] Dump flows from datapath
+[ ] Web UI
 
 Screenshot
 --------------
@@ -62,3 +64,4 @@ Contributors
 [2]: https://github.com/John-Lin
 [3]: https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/howitwork.png
 [4]: https://raw.githubusercontent.com/TakeshiTseng/ryu-dynamic-loader/master/screenshot.jpg
+[5]: https://github.com/TakeshiTseng/Dragon-Knight/issues
