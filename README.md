@@ -1,9 +1,9 @@
-Ryu dynamic loader
+Dragon Knight
 ===================
 
 About this project
 -------------------
-This plugin(app) allow ryu install application dynamically without closing ryu process
+This plugin(application) allow ryu install application dynamically without closing ryu process
 
 How does it work?
 ------------------
