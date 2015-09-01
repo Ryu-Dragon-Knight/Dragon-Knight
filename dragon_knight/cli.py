@@ -115,7 +115,7 @@ class DlCli(cmd.Cmd):
     intro = (_msg + Bcolors.OKGREEN + _anscii_art + Bcolors.ENDC +
              _hint_msg + Bcolors.ENDC)
 
-    prompt = Bcolors.WARNING + 'ryu-cli> ' + Bcolors.ENDC
+    prompt = Bcolors.WARNING + 'dragon-knight> ' + Bcolors.ENDC
 
     def __init__(self):
         cmd.Cmd.__init__(self)
