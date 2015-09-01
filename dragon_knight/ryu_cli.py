@@ -6,7 +6,7 @@ import cmd
 import six
 import json
 
-from ascii_topo import print_topo
+from dragon_knight.lib.ascii_topo import print_topo
 
 if six.PY2:
     import urllib2 as urllib
