@@ -1,10 +1,7 @@
-try:
-    import multiprocessing
-except ImportError:
-    pass
 
-import setuptools
+from setuptools import setup, find_packages
 
-setuptools.setup(name='Dragon Knight',
-                 setup_requires=['ryu>3.22'],
-                 pbr=True)
+setup(
+    name='Dragon Knight',
+    version='1.0'
+)
