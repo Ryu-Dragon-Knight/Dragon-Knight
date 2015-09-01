@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from dragon_knight.daemon import main
+from dragon_knight.cli import main
 main()
