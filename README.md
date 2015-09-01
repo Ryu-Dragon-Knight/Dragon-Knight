@@ -36,20 +36,20 @@ For now, this plugin provide :
 
 Features
 --------------
-[x] Support both python 2.7 and python 3.4
-[x] Provide REST API
-[x] Allow user install external ryu application
-[x] Display applications that doesn't exist in ryu.app module
-[x] Beautiful command line interface
-[x] Ascii-style topology information
-[x] Auto complete application module name/path
-[x] Display bricks relationship
-[ ] [More features!][5]
+1. [x] Support both python 2.7 and python 3.4
+2. [x] Provide REST API
+3. [x] Allow user install external ryu application
+4. [x] Display applications that doesn't exist in ryu.app module
+5. [x] Beautiful command line interface
+6. [x] Ascii-style topology information
+7. [x] Auto complete application module name/path
+8. [x] Display bricks relationship
+9. [ ] [More features!][5]
 
 TODO
 --------------
-[ ] Dump flows from datapath
-[ ] Web UI
+1. [ ] Dump flows from datapath
+2. [ ] Web UI
 
 Screenshot
 --------------
