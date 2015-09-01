@@ -1,4 +1,5 @@
 # -*- codeing: utf-8 -*-
+# Dragon Knight main application
 import logging
 import pkgutil
 import inspect
@@ -12,7 +13,7 @@ from ryu.controller.handler import set_ev_cls
 from ryu.base.app_manager import RyuApp, AppManager
 from ryu.topology import api as topo_api
 
-from dragon_knight.lib.dal_lib import DLController
+from dragon_knight.rest import DLController
 
 
 _REQUIRED_APP = ['ryu.controller.ofp_handler', 'ryu.topology.switches']
