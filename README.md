@@ -47,6 +47,7 @@ TODO
 9. [x] Topology information
 10. [ ] Dump flows from datapath
 11. [x] Auto complete application module name/path
+12. [] Pretty web UI
 
 Screenshot
 --------------
