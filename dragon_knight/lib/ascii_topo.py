@@ -19,6 +19,9 @@ num_colors = len(colors)
 
 
 def print_topo(switches=[], links=[], hosts=[]):
+    '''
+    Print ryu RESTful topology
+    '''
     tlinks = []
     thosts = []
 
