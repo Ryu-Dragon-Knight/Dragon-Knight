@@ -7,7 +7,7 @@ This plugin(application) allow ryu install application dynamically without closi
 
 How does it work?
 ------------------
-We wrote a ryu application and control app manager directly, the code is very simple.
+We wrote a ryu application and control app manager directly.
 ![How does it work][3]
 
 
@@ -18,12 +18,12 @@ Tested environment
 
 How to use it?
 --------------
-Start ryu manager with dal_plugin
-> $ ryu-manager dal_plugin
+Start dragon knight daemon
+> $ dragon-knightd
 
-And start cli.py, and you can use it!
+And start dragon knight daemon, and you can use it!
 
-> $ ./ryu_cli.py
+> $ dragon-knight
 
 What command I can use?
 --------------
@@ -47,7 +47,7 @@ TODO
 9. [x] Topology information
 10. [ ] Dump flows from datapath
 11. [x] Auto complete application module name/path
-12. [] Pretty web UI
+12. [ ] Pretty web UI
 
 Screenshot
 --------------
