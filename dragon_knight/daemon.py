@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import ryu.contrib
 ryu.contrib.update_module_path()
@@ -38,7 +39,7 @@ CONF.register_cli_opts([
 def main(args=None, prog=None):
     try:
         CONF(args=args, prog=prog,
-             project='ryu', version='ryu-manager %s' % version,
+             project='ryu', version='ryu-manager {}'.format(version),
              default_config_files=['/usr/local/etc/ryu/ryu.conf'])
     except cfg.ConfigFilesNotFoundError:
         CONF(args=args, prog=prog,

@@ -1,5 +1,6 @@
 # -*- codeing: utf-8 -*-
 # Dragon Knight main application
+from __future__ import print_function
 import logging
 import pkgutil
 import inspect
@@ -68,7 +69,7 @@ class DynamicLoader(RyuApp):
                         LOG.debug('\tFind ryu app : %s.%s',
                                   _attr.__module__,
                                   _attr.__name__)
-                        _full_name = '%s' % (_attr.__module__,)
+                        _full_name = '{}'.format(_attr.__module__)
                         self.available_app.append((_full_name, _attr))
 
             except ImportError:
