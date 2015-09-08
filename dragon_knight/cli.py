@@ -287,7 +287,7 @@ def main(args=None):
     try:
         DlCli().cmdloop()
     except KeyboardInterrupt:
-        pass
+        print('Command terminate by keyboard interrupt.')
 
 if __name__ == '__main__':
     main()
