@@ -43,7 +43,7 @@ def main(args=None, prog=None):
              default_config_files=['/usr/local/etc/ryu/ryu.conf'])
     except cfg.ConfigFilesNotFoundError:
         CONF(args=args, prog=prog,
-             project='ryu', version='ryu-manager %s' % version)
+             project='ryu', version='ryu-manager {}'.format(version))
 
     log.init_log()
     hub.patch(thread=True)
