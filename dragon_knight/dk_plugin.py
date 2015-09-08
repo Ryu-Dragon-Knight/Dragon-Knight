@@ -37,10 +37,10 @@ class DynamicLoader(RyuApp):
         self.available_app = []
         self.init_apps()
         wsgi = self.create_wsgi_app('0.0.0.0', 5566)
-        mapper = wsgi.mapper
+        self.mapper = wsgi.mapper
         wsgi.registory['DLController'] = self
 
-        self.init_mapper(mapper)
+        self.init_mapper()
 
     def create_wsgi_app(self, host, port):
         wsgi = WSGIApplication()
@@ -76,37 +76,37 @@ class DynamicLoader(RyuApp):
                 LOG.debug('Import Error')
 
     def init_mapper(self, mapper):
-        mapper.connect('list', '/list', controller=DLController,
-                       action='list_all_apps',
-                       conditions=dict(method=['GET']))
+        self.mapper.connect('list', '/list', controller=DLController,
+                            action='list_all_apps',
+                            conditions=dict(method=['GET']))
 
-        mapper.connect('list', '/install', controller=DLController,
-                       action='install_app',
-                       conditions=dict(method=['POST']))
+        self.mapper.connect('list', '/install', controller=DLController,
+                            action='install_app',
+                            conditions=dict(method=['POST']))
 
-        mapper.connect('list', '/installed', controller=DLController,
-                       action='list_installed_app',
-                       conditions=dict(method=['GET']))
+        self.mapper.connect('list', '/installed', controller=DLController,
+                            action='list_installed_app',
+                            conditions=dict(method=['GET']))
 
-        mapper.connect('list', '/uninstall', controller=DLController,
-                       action='uninstall_app',
-                       conditions=dict(method=['POST']))
+        self.mapper.connect('list', '/uninstall', controller=DLController,
+                            action='uninstall_app',
+                            conditions=dict(method=['POST']))
 
-        mapper.connect('list', '/bricks', controller=DLController,
-                       action='report_brick',
-                       conditions=dict(method=['GET']))
+        self.mapper.connect('list', '/bricks', controller=DLController,
+                            action='report_brick',
+                            conditions=dict(method=['GET']))
 
-        mapper.connect('list', '/switches', controller=DLController,
-                       action='list_switches',
-                       conditions=dict(method=['GET']))
+        self.mapper.connect('list', '/switches', controller=DLController,
+                            action='list_switches',
+                            conditions=dict(method=['GET']))
 
-        mapper.connect('list', '/links', controller=DLController,
-                       action='list_links',
-                       conditions=dict(method=['GET']))
+        self.mapper.connect('list', '/links', controller=DLController,
+                            action='list_links',
+                            conditions=dict(method=['GET']))
 
-        mapper.connect('list', '/hosts', controller=DLController,
-                       action='list_hosts',
-                       conditions=dict(method=['GET']))
+        self.mapper.connect('list', '/hosts', controller=DLController,
+                            action='list_hosts',
+                            conditions=dict(method=['GET']))
 
     def create_context(self, key, cls):
         context = None
