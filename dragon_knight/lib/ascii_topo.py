@@ -60,7 +60,7 @@ def print_topo(switches=[], links=[], hosts=[]):
                     thosts.append(host)
 
             for t in tlinks:
-                if len(thosts) > 0:
+                if thosts:
                     print('-' * (len(tlinks) + 1), end='')
                     print('-'.join([th['mac'] for th in thosts]), end='')
                     thosts = []
