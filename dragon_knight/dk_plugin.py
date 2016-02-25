@@ -196,31 +196,30 @@ class DynamicLoader(RyuApp):
         installed_apps_cls =\
             [obj.__class__ for obj in installed_apps.values()]
 
-        for ctx_name in app_contexts:
-            for app_cls in installed_apps_cls:
-                if ctx_name in app_cls._CONTEXTS:
-                    break
+        ctx_to_keep = []
+        for app_cls in installed_apps_cls:
+            ctx_to_keep.extend(app_cls._CONTEXTS.keys())
 
-            else:
-                # remove this context
-                ctx_cls = app_contexts[ctx_name]
-                ctx = self.ryu_mgr.contexts[ctx_name]
-                if issubclass(ctx_cls, RyuApp):
-                    ctx.stop()
+        for ctx_name in [_ for _ in app_contexts if _ not in ctx_to_keep]:
+            # remove this context
+            ctx_cls = app_contexts[ctx_name]
+            ctx = self.ryu_mgr.contexts[ctx_name]
+            if issubclass(ctx_cls, RyuApp):
+                ctx.stop()
 
-                if ctx.name in self.ryu_mgr.applications:
-                    del self.ryu_mgr.applications[ctx.name]
+            if ctx.name in self.ryu_mgr.applications:
+                del self.ryu_mgr.applications[ctx.name]
 
-                if ctx_name in self.ryu_mgr.contexts:
-                    del self.ryu_mgr.contexts[ctx_name]
+            if ctx_name in self.ryu_mgr.contexts:
+                del self.ryu_mgr.contexts[ctx_name]
 
-                if ctx.name in app_manager.SERVICE_BRICKS:
-                    del app_manager.SERVICE_BRICKS[ctx.name]
+            if ctx.name in app_manager.SERVICE_BRICKS:
+                del app_manager.SERVICE_BRICKS[ctx.name]
 
-                ctx.logger.info('Uninstall app %s successfully', ctx.name)
+            ctx.logger.info('Uninstall app %s successfully', ctx.name)
 
-                # handler hacking, remove all stream handler to avoid it log many times!
-                ctx.logger.handlers = []
+            # handler hacking, remove all stream handler to avoid it log many times!
+            ctx.logger.handlers = []
 
     def install_app(self, path):
         context_modules = [x.__module__ for x in self.ryu_mgr.contexts_cls.values()]
