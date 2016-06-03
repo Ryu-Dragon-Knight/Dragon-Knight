@@ -22,11 +22,16 @@ LOG = logging.getLogger('DynamicLoader')
 
 
 def deep_import(mod_name):
-    mod = __import__(mod_name)
-    components = mod_name.split('.')
-    for comp in components[1:]:
-        mod = getattr(mod, comp)
-    return mod
+    try:
+        mod = __import__(mod_name)
+        components = mod_name.split('.')
+        for comp in components[1:]:
+            mod = getattr(mod, comp)
+        return mod
+    except:
+        # Can't import mod
+        return None
+
 
 
 class DynamicLoader(RyuApp):
@@ -61,6 +66,9 @@ class DynamicLoader(RyuApp):
 
             try:
                 _app_module = deep_import('ryu.app.' + name)
+
+                if not _app_module:
+                    raise ImportError()
 
                 for _attr_name in dir(_app_module):
                     _attr = getattr(_app_module, _attr_name)
