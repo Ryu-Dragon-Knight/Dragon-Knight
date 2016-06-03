@@ -14,6 +14,7 @@ log.early_init_log(logging.DEBUG)
 
 from ryu import flags
 from ryu import version
+from ryu.lib import hub
 from ryu.app import wsgi
 from ryu.base.app_manager import AppManager
 from ryu.controller import controller
@@ -21,6 +22,10 @@ from ryu.topology import switches
 
 LOG = logging.getLogger('dragon_knight')
 CONF = cfg.CONF
+
+CONF.set_override('observe_links', True)
+
+
 CONF.register_cli_opts([
     cfg.ListOpt('app-lists', default=[],
                 help='application module name to run'),
@@ -29,10 +34,7 @@ CONF.register_cli_opts([
     cfg.StrOpt('pid-file', default=None, help='pid file name'),
     cfg.BoolOpt('enable-debugger', default=False,
                 help='don\'t overwrite Python standard threading library'
-                '(use only for debugging)'),
-    # ryu.topology.switches hack
-    cfg.BoolOpt('observe-links', default=True,
-                help='observe link discovery events.'),
+                '(use only for debugging)')
 ])
 
 
@@ -59,10 +61,10 @@ def main(args=None, prog=None):
     if not app_lists:
         app_lists = ['ryu.controller.ofp_handler', 'dragon_knight.dk_plugin']
 
-    if 'ryu.controller.ofp_handler' not in app_list:
+    if 'ryu.controller.ofp_handler' not in app_lists:
         app_list.append('ryu.controller.ofp_handler')
 
-    if 'dragon_knight.dk_plugin' not in app_list:
+    if 'dragon_knight.dk_plugin' not in app_lists:
         app_list.append('dragon_knight.dk_plugin')
 
     app_mgr = AppManager.get_instance()
