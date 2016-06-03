@@ -83,7 +83,7 @@ class DynamicLoader(RyuApp):
             except ImportError:
                 LOG.debug('Import Error')
 
-    def init_mapper(self, mapper):
+    def init_mapper(self):
         self.mapper.connect('list', '/list', controller=DLController,
                             action='list_all_apps',
                             conditions=dict(method=['GET']))
