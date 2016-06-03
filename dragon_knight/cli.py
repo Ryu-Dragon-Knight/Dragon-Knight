@@ -58,7 +58,7 @@ def http_post(url, req_body):
     return python dictionary data
 
     param:
-        url: url for http GET, string type
+        url: url for http POST, string type
         req_body: data to send, string type
     '''
     result = None
@@ -73,7 +73,7 @@ def http_post(url, req_body):
     else:
         http = urllib.PoolManager()
         response = http.urlopen('POST', url, body=req_body)
-        result = json.load(response)
+        result = json.loads(response.data.decode('utf8'))
 
     return result
 
