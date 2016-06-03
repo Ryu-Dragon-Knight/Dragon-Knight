@@ -57,12 +57,12 @@ def main(args=None, prog=None):
     app_lists = CONF.app_lists + CONF.app
 
     if not app_lists:
-        app_lists = ['ryu.controller.ofp_handler', 'dragon_knight.dal_plugin']
+        app_lists = ['ryu.controller.ofp_handler', 'dragon_knight.dk_plugin']
 
     if 'ryu.controller.ofp_handler' not in app_list:
         app_list.append('ryu.controller.ofp_handler')
 
-    if 'dragon_knight.dal_plugin' not in app_list:
+    if 'dragon_knight.dk_plugin' not in app_list:
         app_list.append('dragon_knight.dk_plugin')
 
     app_mgr = AppManager.get_instance()
