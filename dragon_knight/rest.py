@@ -1,6 +1,7 @@
 # -*- codeing: utf-8 -*-
 import logging
 import json
+import six
 from webob import Response
 from ryu.app.wsgi import ControllerBase
 from ryu.app.wsgi import WSGIApplication
@@ -50,7 +51,12 @@ class DLController(ControllerBase):
 
     @rest_command
     def install_app(self, req, **_kwargs):
-        body = json.loads(req.body)
+        if six.PY2:
+            body = json.loads(req.body)
+
+        else:
+            body = json.loads(req.body.decode('utf8'))
+
         path = body['path']
 
         self.ryu_app.install_app(path)
@@ -58,7 +64,11 @@ class DLController(ControllerBase):
 
     @rest_command
     def uninstall_app(self, req, **_kwargs):
-        body = json.loads(req.body)
+        if six.PY2:
+            body = json.loads(req.body)
+
+        else:
+            body = json.loads(req.body.decode('utf8'))
         path = body['path']
 
         self.ryu_app.uninstall_app(path)
