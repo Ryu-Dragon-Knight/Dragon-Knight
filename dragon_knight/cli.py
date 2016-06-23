@@ -20,6 +20,7 @@ CLI_INSTALL_PATH = '/install'
 CLI_INSTALLED_PATH = '/installed'
 CLI_BRICKS_PATH = '/bricks'
 CLI_UNINSTALL_PATH = '/uninstall'
+CLI_CUSTOM_PATH = '/custom_cmd'
 
 # for topology
 CLI_SWITCHES_PATH = '/switches'
@@ -255,6 +256,19 @@ class DlCli(cmd.Cmd):
         hosts = http_get(CLI_BASE_URL + CLI_HOSTS_PATH)
 
         print_topo(switches, links, hosts)
+
+    def do_custom(self, line):
+        '''
+        Custom command
+        '''
+        args = line.split(' ')
+        req_body = json.dumps({'cmd_name': args[0], 'cmd_args': args[1:]})
+        result = http_post(CLI_BASE_URL + CLI_CUSTOM_PATH, req_body)
+
+        if result['err']:
+            print(result['msg'])
+        else:
+            print(result['res'])
 
     def default(self, line):
         fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC
