@@ -120,6 +120,10 @@ class DynamicLoader(RyuApp):
                             action='list_hosts',
                             conditions=dict(method=['GET']))
 
+        self.mapper.connect('list', '/custom_cmd', controller=DLController,
+                            action='custom_cmd',
+                            conditions=dict(method=['POST']))
+
     def create_context(self, key, cls):
         context = None
 
@@ -278,3 +282,12 @@ class DynamicLoader(RyuApp):
     def list_hosts(self):
         hosts = topo_api.get_all_host(self)
         return [host.to_dict() for host in hosts]
+
+    def custom_cmd(self, cmd_name, cmd_args):
+        cmd_func = DynamicLoader.APP_CUSTOM_CLI.get(cmd_name, None)
+
+        if not cmd_func:
+            return {'err': True, 'msg': 'Unknown cmd'}
+
+        result = cmd_func(*cmd_args)
+        return {'err': False, 'res': result}

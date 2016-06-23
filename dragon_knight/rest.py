@@ -85,3 +85,15 @@ class DLController(ControllerBase):
     @rest_command
     def list_hosts(self, req, **_kwargs):
         return self.ryu_app.list_hosts()
+
+    @rest_command
+    def custom_cmd(self, req, **_kwargs):
+        if six.PY2:
+            body = json.loads(req.body)
+
+        else:
+            body = json.loads(req.body.decode('utf8'))
+
+        cmd_name = body['cmd_name']
+        cmd_args = body['cmd_args']
+        return self.ryu_app.custom_cmd(cmd_name, cmd_args)
