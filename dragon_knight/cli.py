@@ -272,7 +272,7 @@ class DlCli(cmd.Cmd):
 
     def default(self, line):
         fail_msg = Bcolors.FAIL + 'Command not found: ' + line + Bcolors.ENDC
-        print (fail_msg)
+        print(fail_msg)
 
     def do_exit(self, line):
         '''
