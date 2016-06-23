@@ -33,8 +33,8 @@ def deep_import(mod_name):
         return None
 
 
-
 class DynamicLoader(RyuApp):
+    APP_CUSTOM_CLI = {}
 
     def __init__(self, *args, **kwargs):
         super(DynamicLoader, self).__init__(*args, **kwargs)
@@ -46,6 +46,10 @@ class DynamicLoader(RyuApp):
         wsgi.registory['DLController'] = self
 
         self.init_mapper()
+
+    @classmethod
+    def register_custom_cmd(cls, cmd_name, cmd_func):
+        DynamicLoader.APP_CUSTOM_CLI.setdefault(cmd_name, cmd_func)
 
     def create_wsgi_app(self, host, port):
         wsgi = WSGIApplication()
