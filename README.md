@@ -44,7 +44,8 @@ Features
 6. [x] Ascii-style topology information
 7. [x] Auto complete application module name/path
 8. [x] Display bricks relationship
-9. [ ] [More features!][5]
+9. [x] Allow developer add custom command for their Ryu Application
+10. [ ] [More features!][5]
 
 TODO
 --------------
